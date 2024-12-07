@@ -34,15 +34,6 @@ class Scene1 extends Phaser.Scene {
     map.layers.forEach((_layer, index) => {
       return map.createLayer(index, tileset || '', 0, 0);
     });
-
-    // Adjust the camera to fit the entire map
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    this.cameras.main.setZoom(Math.min(
-      window.innerWidth / map.widthInPixels,
-      window.innerHeight / map.heightInPixels
-    ));
-    this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
-
     const heroSprite = this.physics.add.sprite(0, 0, '1');
     heroSprite.setScale(0.03, 0.03);
     const gridEngineConfig = {
@@ -52,6 +43,16 @@ class Scene1 extends Phaser.Scene {
         startPosition: { x: 10, y: 10 },
       }],
     };
+
+    // Adjust the camera to fit the entire map
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main.setZoom(3);
+    // this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
+    // centre on the player
+    this.cameras.main.startFollow(heroSprite);
+
+
+
     this.gridEngine.create(map, gridEngineConfig);
 
 
@@ -167,7 +168,7 @@ export default function Scene() {
     type: Phaser.AUTO,
     parent: "game-contatiner",
     width: window.innerWidth,
-    height: window.outerHeight,
+    height: window.innerHeight,
     physics: {
       default: "arcade"
     },
@@ -196,7 +197,5 @@ export default function Scene() {
     }
   }, [])
 
-  return <div>
-    <div id="game-contatiner"></div>
-  </div>
+  return <div id="game-contatiner"></div>
 }
