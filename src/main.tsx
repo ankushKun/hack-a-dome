@@ -13,10 +13,10 @@ import '@coinbase/onchainkit/styles.css';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <OnchainKitProvider apiKey="1mgDEk4iV5TOEEPwvTEB96K8P07GYCBa" chain={baseSepolia}>
-      <BrowserRouter>
+      <BrowserRouter basename='/hack-a-dome/'>
         <Routes>
-          <Route path="/" element={<Scene />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/" element={<Auth />} />
+          <Route path="/scene" element={<Scene />} />
         </Routes>
       </BrowserRouter>
     </OnchainKitProvider>

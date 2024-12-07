@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { useEffect } from "react";
-import mapJson from "./map/map.json"
-import mapImg from "./map/tileset.png"
+// import mapJson from "./map/map.json"
+// import mapImg from "./map/tileset.png"
 import { GridEngine } from "grid-engine";
 
 class Scene1 extends Phaser.Scene {
@@ -12,10 +12,10 @@ class Scene1 extends Phaser.Scene {
   gridEngine: any;
 
   preload() {
-    this.load.setBaseURL('http://localhost:5173');
+    this.load.setBaseURL(window.location.origin + "/hack-a-dome/");
 
-    this.load.tilemapTiledJSON('main-map', mapJson);
-    this.load.image('tileset', mapImg);
+    this.load.tilemapTiledJSON('main-map', '/map/map.json');
+    this.load.image('tileset', '/map/tileset.png');
 
     this.load.image('map', '/map.png');
     this.load.image('1', '/1.png');
@@ -44,12 +44,12 @@ class Scene1 extends Phaser.Scene {
     this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
 
     const heroSprite = this.physics.add.sprite(0, 0, '1');
-
+    heroSprite.setScale(0.03, 0.03);
     const gridEngineConfig = {
       characters: [{
         id: 'hero',
         sprite: heroSprite,
-        startPosition: { x: 1, y: 1 },
+        startPosition: { x: 10, y: 10 },
       }],
     };
     this.gridEngine.create(map, gridEngineConfig);
