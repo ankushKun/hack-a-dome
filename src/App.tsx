@@ -7,6 +7,9 @@ import { GridEngine } from "grid-engine";
 class Scene1 extends Phaser.Scene {
 
   sprite: Phaser.GameObjects.Sprite | null = null;
+  tileWidth: number | undefined;
+  tileHeight: number | undefined;
+  gridEngine: any;
 
   preload() {
     this.load.setBaseURL('http://localhost:5173');
@@ -26,19 +29,28 @@ class Scene1 extends Phaser.Scene {
     this.tileHeight = 16;
 
     const map = this.make.tilemap({ key: 'main-map' });
-    map.addTilesetImage('tileset', 'tileset');
-    map.layers.forEach((layer, index) => {
-      map.createLayer(index, 'tileset', 0, 0);
+    const tileset = map.addTilesetImage('tileset', 'tileset');
+
+    map.layers.forEach((_layer, index) => {
+      return map.createLayer(index, tileset || '', 0, 0);
     });
+
+    // Adjust the camera to fit the entire map
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main.setZoom(Math.min(
+      window.innerWidth / map.widthInPixels,
+      window.innerHeight / map.heightInPixels
+    ));
+    this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
 
     const heroSprite = this.physics.add.sprite(0, 0, '1');
 
     const gridEngineConfig = {
-      characters: [{
-        id: 'hero',
-        sprite: heroSprite,
-        startPosition: { x: 1, y: 1 },
-      }],
+        characters: [{
+            id: 'hero',
+            sprite: heroSprite,
+            startPosition: { x: 1, y: 1 },
+        }],
     };
     this.gridEngine.create(map, gridEngineConfig);
 
@@ -132,17 +144,17 @@ class Scene1 extends Phaser.Scene {
   }
 
 
-  update(time: number, delta: number): void {
+  update(_time: number, _delta: number): void {
     // console.log(time, delta);
-    const cursors = this.input.keyboard.createCursorKeys();
+    const cursors = this.input?.keyboard?.createCursorKeys();
 
-    if (cursors.left.isDown) {
+    if (cursors?.left.isDown) {
       this.gridEngine.move('hero', 'left');
-    } else if (cursors.right.isDown) {
+    } else if (cursors?.right.isDown) {
       this.gridEngine.move('hero', 'right');
-    } else if (cursors.up.isDown) {
+    } else if (cursors?.up.isDown) {
       this.gridEngine.move('hero', 'up');
-    } else if (cursors.down.isDown) {
+    } else if (cursors?.down.isDown) {
       this.gridEngine.move('hero', 'down');
     }
   }
