@@ -1,6 +1,10 @@
 'use client';
 
+interface Window {
+    ethereum?: any;
+}
 
+import { useNavigate } from "react-router-dom";
 import { OauthClient } from "@zk-email/oauth-sdk";
 import { createPublicClient, Address as ViemAddress, http } from 'viem';
 import { baseSepolia } from "viem/chains"
@@ -22,8 +26,10 @@ import {
     Name,
     Identity
 } from '@coinbase/onchainkit/identity';
+import { useEffect } from "react";
 
 function WalletWrapper() {
+
 
     return (
         <>
@@ -55,6 +61,7 @@ function WalletWrapper() {
 }
 
 export default function Auth() {
+    const navigate = useNavigate();
 
     const publicClient = createPublicClient({
         chain: baseSepolia, // Chain
@@ -64,28 +71,42 @@ export default function Auth() {
     const oauthAddress: ViemAddress = '0x8bFcBe6662e0410489d210416E35E9d6B62AF659'; // Your OAuth core contract address, deployed on Base Sepolia
     const relayerHost: string = "https://oauth-api.emailwallet.org"; // Your relayer host; this one is public and deployed on Base Sepolia
 
+    useEffect(() => {
+        const intr = setInterval(() => {
+            const connected = (window.ethereum as any).isConnected()
+            if (connected) {
+                navigate("/scene");
+            }
+        }, 100)
 
+        return () => {
+            clearInterval(intr);
+        }
+    }, [])
 
 
     return <div className="h-screen flex flex-col items-center justify-center">
         <div className="text-5xl">Hack-A-Dome</div>
-        <div className="text-md text-gray-400">Almost "onchain" gathertown ;)</div>
+        <div className="text-md text-gray-300 my-2">Almost "onchain" gathertown ;)</div>
         <div className="flex items-center justify-center mx-auto w-fit my-20">
             <div className="m-5 w-fit ml-auto">
-                <div className="text-center">
+                {/* <div className="text-center my-1 text-xl">
                     Login with zkEmail
-                </div>
-                <div className="flex flex-col mx-auto w-fit p-1 gap-1">
+                </div> */}
+                <div className="flex flex-col mx-auto w-fit my-1 gap-1">
                     <input type="text" id="username" placeholder="email" className="ring-1 ring-black/20 rounded-md p-1" />
                     <input type="password" id="password" placeholder="password" className="ring-1 ring-black/20 rounded-md p-1" />
                 </div>
                 <button onClick={async () => {
                     const username = (document.getElementById("username") as HTMLInputElement).value;
                     const password = (document.getElementById("password") as HTMLInputElement).value;
+                    if (!username || !password) {
+                        return alert("Please enter a valid username and password");
+                    }
                     const oauthClient = new OauthClient(publicClient as any, coreAddress, oauthAddress, relayerHost);
                     const result = await oauthClient.setup(username, password, null, null);
                     console.log(result);
-                }} className="bg-blue-500 mx-auto block p-2 px-4 rounded-md text-white">Login</button>
+                }} className="bg-blue-500 w-full mx-auto block p-2 px-4 rounded-md text-white">zkEmail Login</button>
             </div>
             <div className="text-gray-400 w-fit">or</div>
             <WalletWrapper />

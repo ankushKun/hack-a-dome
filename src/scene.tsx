@@ -51,97 +51,14 @@ class Scene1 extends Phaser.Scene {
     // centre on the player
     this.cameras.main.startFollow(heroSprite);
 
-
-
     this.gridEngine.create(map, gridEngineConfig);
 
 
-    //make map the background of the game and make sure it is centered and zoomed in
-    // const map = this.add.image(0, 0, 'map').setOrigin(0, 0);
-    // map.setScale(3, 3);
-
-    // this.sprite = this.physics.add.sprite(100, 100, '1');
-    // this.sprite.setScale(0.08, 0.08)
-    // console.log(this.sprite);
-
-    // const keyW = this.input.keyboard?.addKey('W');
-    // const keyS = this.input.keyboard?.addKey('S');
-    // const keyA = this.input.keyboard?.addKey('A');
-    // const keyD = this.input.keyboard?.addKey('D');
-
-    // console.log(keyW, keyS, keyA, keyD);
-
-    // if (keyW?.isDown) {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityY(-100);
-    // } else {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityY(0);
-    // }
-
-    // if (keyS?.isDown) {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityY(100);
-    // } else {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityY(0);
-    // }
-
-    // if (keyA?.isDown) {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityX(-100);
-    // } else {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityX(0);
-    // }
-
-    // if (keyD?.isDown) {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityX(100);
-    // } else {
-    //   // @ts-expect-error function exists
-    //   this.sprite?.setVelocityX(0);
-    // }
-
-
-
-    // this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
-    //   const key = event.key;
-    //   console.log(key);
-    //   if (key === "w") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocity(0);
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityY(-100);
-    //   } else if (key === "s") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocity(0);
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityY(100);
-    //   } else if (key === "a") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocity(0);
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityX(-100);
-    //   } else if (key === "d") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocity(0);
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityX(100);
-    //   }
-    // })
-
-    // this.input.keyboard?.on('keyup', (event: KeyboardEvent) => {
-    //   const key = event.key;
-
-    //   if (key === "w" || key === "s") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityY(0);
-    //   } else if (key === "a" || key === "d") {
-    //     // @ts-expect-error function exists
-    //     this.sprite?.setVelocityX(0);
-    //   }
-    // })
+    // spawn npcs and run a function when they are clicked
+    const catSprite = this.physics.add.sprite(40, 40, 'cat');
+    catSprite.setScale(0.03, 0.03);
+    this.gridEngine.addCharacter('cat', catSprite, { x: 15, y: 15 });
+    console.log(this.gridEngine);
   }
 
 
