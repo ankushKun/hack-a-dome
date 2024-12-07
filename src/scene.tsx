@@ -55,17 +55,23 @@ class Scene1 extends Phaser.Scene {
 
 
     // spawn npcs and run a function when they are clicked
-    const catSprite = this.physics.add.sprite(40, 40, 'cat');
+    const catSprite = this.physics.add.sprite(20, 20, 'cat');
     catSprite.setScale(0.03, 0.03);
-    this.gridEngine.addCharacter('cat', catSprite, { x: 15, y: 15 });
+    // this.gridEngine.addCharacter('cat', catSprite, { x: 30, y: 20 });
     console.log(this.gridEngine);
+
+    // on cat click
+    catSprite.setInteractive();
+    catSprite.on('pointerdown', () => {
+      alert("meow")
+    });
   }
 
 
   update(_time: number, _delta: number): void {
     // console.log(time, delta);
     const cursors = this.input?.keyboard?.createCursorKeys();
-
+    // console.log(this.gridEngine)
     if (cursors?.left.isDown) {
       this.gridEngine.move('hero', 'left');
     } else if (cursors?.right.isDown) {

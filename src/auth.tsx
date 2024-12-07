@@ -1,7 +1,9 @@
 'use client';
 
-interface Window {
-    ethereum?: any;
+declare global {
+    interface Window {
+        ethereum?: any;
+    }
 }
 
 import { useNavigate } from "react-router-dom";
