@@ -160,7 +160,7 @@ class Scene1 extends Phaser.Scene {
   }
 }
 
-export default function App() {
+export default function Scene() {
 
 
   const config: Phaser.Types.Core.GameConfig = {
