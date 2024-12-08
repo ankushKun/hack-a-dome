@@ -14,7 +14,7 @@ import axios from "axios";
 import { Video } from "@huddle01/react/components";
 import RemotePeer from "./components/remote-peer";
 import { Dock, DockIcon } from "./components/dock";
-import { MessageCircle, Mic, MicOff, VideoIcon, VideoOff } from "lucide-react";
+import { Loader2, MessageCircle, Mic, MicOff, PhoneOff, VideoIcon, VideoOff } from "lucide-react";
 // import { createRoom } from "./utils/create-room";
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import ChatBox from "./components/chatbox";
@@ -427,12 +427,15 @@ export default function Scene() {
     }
   ];
 
+  const litContract = ""
+  const litAbi = []
+
   return <div className="flex flex-col items-end">
     <div className="h-10 flex flex-row gap-1 p-1 items-center justify-center bg-[#a08c64] absolute top-0 left-0 right-0 z-20">
-      {/* <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
-        
-      }}>Enter Raffle</button> */}
       <TransactionDefault calls={calls as any} className="w-fit" />
+      <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
+
+      }}>Enter Raffle</button>
 
       <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
         // const roomid = await createRoom()
@@ -460,11 +463,13 @@ export default function Scene() {
 
         const token = await getToken();
         console.log(token)
-        joinRoom({ roomId: ROOM_ID, token });
-      }}>Join Huddle</button>
+        joinRoom({ roomId: ROOM_ID, token }).then(() => {
+
+        })
+      }}>Join Huddle{state == "connecting" && <Loader2 className="animate-spin inline" />}</button>
       <div className="grow"></div>
       <WalletDefault />
-      <div className="flex-1 p-6 relative top-10">
+      {state == "connected" && <div className="flex-1 p-6 relative top-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Local Video */}
           <div className="relative aspect-video bg-[#1A1C23] rounded-xl overflow-hidden">
@@ -496,13 +501,20 @@ export default function Scene() {
             >
               {isVideoOn ? <VideoIcon className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
             </DockIcon>
+            <DockIcon
+              // @ts-ignore
+              onClick={() => window.location.reload()}
+              className={"bg-red-500 hover:bg-red-600"}
+            >
+              <PhoneOff className="w-5 h-5" />
+            </DockIcon>
           </Dock>
           {/* Remote Peers */}
           {peerIds.map((peerId) => (
             <RemotePeer key={peerId} peerId={peerId} />
           ))}
         </div>
-      </div>
+      </div>}
       <ChatBox booth="Base Chat" userWalletAddress={window.address} />
     </div>
     <div id="game-contatiner" className="absolute top-[40px] !h-[calc(80vh-40px)]"></div>
