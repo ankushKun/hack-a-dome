@@ -15,8 +15,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ booth, userWalletAddress }) => {
     const boothName = booth || "BASE";
     const [chatVisible, setChatVisible] = useState<boolean>(true);
 
-    const backendUrl = "http://localhost:5000/api/chat"; // Replace with your backend URL
-    const mintNFTUrl = "http://localhost:5000/api/mint-nft"; // Replace with your minting endpoint
+    const backendUrl = "http://localhost:3000/api/chat"; // Replace with your backend URL
+    const mintNFTUrl = "http://localhost:3000/api/mint-nft"; // Replace with your minting endpoint
 
     const handleSend = async () => {
         if (!input.trim()) return;

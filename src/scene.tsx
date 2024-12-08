@@ -95,7 +95,7 @@ class Scene1 extends Phaser.Scene {
 
     // Adjust the camera to fit the entire map
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(2.5);
     // this.cameras.main.centerOn(map.widthInPixels / 2, map.heightInPixels / 2);
     // centre on the player
     this.cameras.main.startFollow(heroSprite);

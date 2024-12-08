@@ -11,7 +11,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@coinbase/cdp-agentkit-core": "^0.0.7",
+    "@coinbase/cdp-langchain": "^0.0.8",
     "@huddle01/server-sdk": "^2.5.5",
+    "@langchain/core": "^0.3.22",
+    "@langchain/langgraph": "^0.2.27",
+    "@langchain/openai": "^0.3.14",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "ws": "^8.18.0"
