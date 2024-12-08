@@ -3,6 +3,8 @@
 declare global {
     interface Window {
         ethereum?: any;
+        address?: string;
+        lastTime?: number;
     }
 }
 
@@ -26,20 +28,17 @@ import {
     Badge,
     EthBalance,
     Name,
-    Identity
+    Identity,
 } from '@coinbase/onchainkit/identity';
+import { useAddress } from "@coinbase/onchainkit/identity";
 import { useEffect } from "react";
+import { useAccount } from "wagmi";
 
 function WalletWrapper() {
-
-
     return (
         <>
             <Wallet className="mr-auto m-5">
-                <ConnectWallet text="Connect with BASE" onConnect={() => {
-                    localStorage.setItem("connected", "true");
-                    window.location.reload();
-                }}>
+                <ConnectWallet text="Connect with BASE">
                     <Avatar className="h-6 w-6" />
                     <Name />
                 </ConnectWallet>
@@ -64,6 +63,7 @@ function WalletWrapper() {
 
 export default function Auth() {
     const navigate = useNavigate();
+    const { isConnected } = useAccount()
 
     const publicClient = createPublicClient({
         chain: baseSepolia, // Chain
@@ -74,17 +74,8 @@ export default function Auth() {
     const relayerHost: string = "https://oauth-api.emailwallet.org"; // Your relayer host; this one is public and deployed on Base Sepolia
 
     useEffect(() => {
-        const intr = setInterval(() => {
-            const connected = (window.ethereum as any).isConnected()
-            if (connected) {
-                navigate("/scene");
-            }
-        }, 100)
-
-        return () => {
-            clearInterval(intr);
-        }
-    }, [])
+        if (isConnected) navigate("/scene")
+    }, [isConnected])
 
 
     return <div className="h-screen flex flex-col items-center justify-center">
