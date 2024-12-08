@@ -18,6 +18,11 @@ import { Loader2, MessageCircle, Mic, MicOff, PhoneOff, VideoIcon, VideoOff } fr
 // import { createRoom } from "./utils/create-room";
 import { TransactionDefault } from "@coinbase/onchainkit/transaction"
 import ChatBox from "./components/chatbox";
+import * as ethers from "ethers";
+import { parseEther } from "ethers/utils"
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
+import { LIT_NETWORK, LIT_RPC, LIT_ABILITY } from "@lit-protocol/constants";
+import { createSiweMessage, generateAuthSig, LitActionResource, LitPKPResource } from "@lit-protocol/auth-helpers";
 
 
 const ROOM_ID = "fqn-lckz-oos"
@@ -427,14 +432,213 @@ export default function Scene() {
     }
   ];
 
-  const litContract = ""
-  const litAbi = []
+  const LIT_ADDRESS = "0xaEf14599D048335b91cD6a5bDB454a227F808Cb3"
+  const LIT_ABI = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "winner",
+          type: "address",
+        },
+      ],
+      name: "declareWinner",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "enterRaffle",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "entranceFee",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "nonpayable",
+      type: "constructor",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "",
+          type: "string",
+        },
+      ],
+      name: "Raffle__RaffleNotOpen",
+      type: "error",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "",
+          type: "string",
+        },
+      ],
+      name: "Raffle__SendMoreToEnterRaffle",
+      type: "error",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "",
+          type: "string",
+        },
+      ],
+      name: "Raffle__TransferFailed",
+      type: "error",
+    },
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "",
+          type: "string",
+        },
+      ],
+      name: "Raffle__WinnerAlreadyDeclared",
+      type: "error",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "player",
+          type: "address",
+        },
+      ],
+      name: "RaffleEntered",
+      type: "event",
+    },
+    {
+      inputs: [],
+      name: "resetRaffle",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "startCalculatingWinner",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: "address",
+          name: "winner",
+          type: "address",
+        },
+      ],
+      name: "WinnerDeclared",
+      type: "event",
+    },
+    {
+      inputs: [],
+      name: "getPlayers",
+      outputs: [
+        {
+          internalType: "address payable[]",
+          name: "",
+          type: "address[]",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "getRaffleState",
+      outputs: [
+        {
+          internalType: "enum Raffle.RaffleState",
+          name: "",
+          type: "uint8",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "getRecentWinner",
+      outputs: [
+        {
+          internalType: "address",
+          name: "",
+          type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "getTotalStaked",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "totalStaked",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+
+  const litNodeClient = new LitJsSdk.LitNodeClient({
+    litNetwork: LIT_NETWORK.DatilDev
+  });
 
   return <div className="flex flex-col items-end">
     <div className="h-10 flex flex-row gap-1 p-1 items-center justify-center bg-[#a08c64] absolute top-0 left-0 right-0 z-20">
       <TransactionDefault calls={calls as any} className="w-fit" />
       <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
 
+        litNodeClient.connect();
+        await litNodeClient.connect();
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contract = new ethers.Contract(
+          LIT_ADDRESS,
+          LIT_ABI,
+          signer
+        );
+        const transaction = await contract.enterRaffle({
+          value: parseEther("0.0001"), // Send the required ETH as msg.value
+        });
+        console.log(transaction);
       }}>Enter Raffle</button>
 
       <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
