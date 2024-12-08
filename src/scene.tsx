@@ -45,7 +45,7 @@ class Scene1 extends Phaser.Scene {
     this.load.image('3', '/3.png');
     this.load.image('cat', '/cat.png');
 
-    this.ws = new w3cwebsocket("ws://localhost:8080")
+    this.ws = new w3cwebsocket("ws://37.60.238.86:8080")
 
     this.ws.onmessage = (event) => {
       const data = JSON.parse(event.data as string) as { [address: string]: { x: number, y: number } }
@@ -446,7 +446,7 @@ export default function Scene() {
           let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:3000/generate-token',
+            url: 'http://37.60.238.86:3000/generate-token',
             headers: {
               'Content-Type': 'application/json'
             },
