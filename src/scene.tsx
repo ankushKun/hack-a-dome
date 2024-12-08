@@ -7,6 +7,17 @@ import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
 import { Wallet, WalletDefault } from "@coinbase/onchainkit/wallet";
 import { w3cwebsocket } from "websocket"
+import toast from "react-hot-toast";
+import { useRoom } from "@huddle01/react";
+import { useLocalPeer, useLocalVideo, usePeerIds, useLocalAudio } from "@huddle01/react/hooks";
+import axios from "axios";
+import { Video } from "@huddle01/react/components";
+import RemotePeer from "./components/remote-peer";
+import { Dock, DockIcon } from "./components/dock";
+import { MessageCircle, Mic, MicOff, VideoIcon, VideoOff } from "lucide-react";
+// import { createRoom } from "./utils/create-room";
+
+const ROOM_ID = "fqn-lckz-oos"
 
 class Scene1 extends Phaser.Scene {
 
@@ -35,7 +46,7 @@ class Scene1 extends Phaser.Scene {
 
     this.ws.onmessage = (event) => {
       const data = JSON.parse(event.data as string) as { [address: string]: { x: number, y: number } }
-      console.log(data)
+      // console.log(data)
 
       for (const [address, { x, y }] of Object.entries(data)) {
         if (address === window.address) continue
@@ -118,7 +129,7 @@ class Scene1 extends Phaser.Scene {
       // on npc1 click
       npc.setInteractive();
       npc.on('pointerdown', () => {
-        alert("hello")
+        toast.success("hello")
       });
     }
 
@@ -160,9 +171,26 @@ class Scene1 extends Phaser.Scene {
   }
 }
 
+type TPeerMetadata = {
+  displayName: string;
+};
+
 export default function Scene() {
   const navigate = useNavigate();
   const { isConnected, address } = useAccount()
+  const { updateMetadata } = useLocalPeer<TPeerMetadata>();
+  const { joinRoom, state } = useRoom({
+    onJoin: (room) => {
+      console.log('onJoin', room);
+      updateMetadata({ displayName: window.address });
+    },
+    onPeerJoin: (peer) => {
+      console.log('onPeerJoin', peer);
+    },
+  });
+  const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
+  const { peerIds } = usePeerIds();
+  const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
 
   useEffect(() => {
     window.address = address
@@ -204,8 +232,74 @@ export default function Scene() {
   }, [])
 
   return <div className="flex flex-col items-end">
-    <div className="h-10 flex flex-col items-end bg-[#a08c64] absolute top-0 left-0 right-0 z-20">
+    <div className="h-10 flex flex-row items-center justify-center bg-[#a08c64] absolute top-0 left-0 right-0 z-20">
+      <button className="bg-[#1e293b] text-white p-2 rounded-md" onClick={async () => {
+        // const roomid = await createRoom()
+        // console.log(roomid)
+        // localStorage.setItem("roomid", roomid)
+        async function getToken() {
+          let data = JSON.stringify({
+            "roomId": "ymd-ltjl-zfx"
+          });
+
+          let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'http://localhost:3000/generate-token',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data: data
+          };
+
+          const res = await axios.request(config)
+
+          return res.data
+        }
+
+        const token = await getToken();
+        console.log(token)
+        joinRoom({ roomId: ROOM_ID, token });
+      }}>Join Huddle</button>
+      <div className="grow"></div>
       <WalletDefault />
+      <div className="flex-1 p-6 relative top-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Local Video */}
+          <div className="relative aspect-video bg-[#1A1C23] rounded-xl overflow-hidden">
+            {stream && (
+              <> <Video
+                stream={stream}
+                className="w-full h-full object-cover"
+              />
+              </>
+            )}
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <span className="bg-black/50 text-white px-3 py-1 rounded-lg text-sm">
+                You
+              </span>
+            </div>
+          </div>
+          <Dock className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#1A1C23] border border-gray-800 rounded-xl shadow-lg">
+            <DockIcon
+              onClick={() => isAudioOn ? disableAudio() : enableAudio()}
+              className={isAudioOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-500 hover:bg-red-600"}
+            >
+              {isAudioOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
+            </DockIcon>
+            <DockIcon
+              onClick={() => isVideoOn ? disableVideo() : enableVideo()}
+              className={isVideoOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-500 hover:bg-red-600"}
+            >
+              {isVideoOn ? <VideoIcon className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
+            </DockIcon>
+          </Dock>
+          {/* Remote Peers */}
+          {peerIds.map((peerId) => (
+            <RemotePeer key={peerId} peerId={peerId} />
+          ))}
+        </div>
+      </div>
     </div>
     <div id="game-contatiner" className="absolute top-[40px] !h-[calc(80vh-40px)]"></div>
   </div>

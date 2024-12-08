@@ -11,6 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@huddle01/server-sdk": "^2.5.5",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "ws": "^8.18.0"
   }
 }
