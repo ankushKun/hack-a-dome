@@ -282,12 +282,14 @@ export default function Scene() {
           </div>
           <Dock className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#1A1C23] border border-gray-800 rounded-xl shadow-lg">
             <DockIcon
+              // @ts-ignore
               onClick={() => isAudioOn ? disableAudio() : enableAudio()}
               className={isAudioOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-500 hover:bg-red-600"}
             >
               {isAudioOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
             </DockIcon>
             <DockIcon
+              // @ts-ignore
               onClick={() => isVideoOn ? disableVideo() : enableVideo()}
               className={isVideoOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-500 hover:bg-red-600"}
             >

@@ -38,7 +38,8 @@ const RemotePeer = ({ peerId }: Props) => {
                         <span className="bg-black/50 px-3 py-1 rounded-lg text-white text-sm">
                             {metadata?.displayName || 'Guest'}
                         </span>
-                        {audioState == 'off' && (
+
+                        {audioState === 'unavailable' && (
                             <span className="bg-black/50 p-1.5 rounded-lg text-white">
                                 <MicOff className="w-4 h-4" />
                             </span>
